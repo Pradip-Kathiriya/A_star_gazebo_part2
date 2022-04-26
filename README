@@ -12,7 +12,7 @@
 * A catkin workspace which have turtlebot3 packages preinstalled.
 *ADD 'export TURTLEBOT3_MODEL=burger' inside .bashrc file
 
-######################## INSTRUCTIONS to run ########################
+######################################################### INSTRUCTIONS to run ###############################################################
 
 #### FIRST TERMINAL WINDOW
 * Copy the package 'turtlebot3_a_star',into the 'src' folder of a catkin workspace(say 'catkin_ws') which contains other turtlebot3 packages. 
@@ -35,12 +35,22 @@
 * The start node should have same values as of 'X' , 'Y' and 'Z', as in roslaunch command. 
 * Make sure to enter integer values when asked for, and the value of orientation for start should be in degrees.
 * For start and goal positions:
-        First, input the x - coordinate and press "Enter" .Followed by inputing the y-coordinate and press "Enter"       
+        First, input the x - coordinate and press "Enter" .Followed by inputing the y-coordinate and press "Enter"  
+##### 'VERY IMPORANT NOTE' ########     
 * 'RUN THE PROGRAM FROM START AGAIN, WHEN PROMPTED' (This is to respawn the bot correctly in gazebo, as the start or goal position is in obstacle space) 
 
 * Finding path takes less than 45 seconds for the largest distance.
 
 * To terminate. Press 'Ctrl+Z' on the second window and 'Ctrl+C' on the first window.
+
+################################################################################################################################
+
+
+########## TEST CASE : ##########################
+Start position: (1,1) and orientation = 0 degrees
+Goal Position : (9,9)
+#################################################
+
 
 ###########
 Project Partner:

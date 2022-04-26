@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Twist
-import queue
+# import queue
 import time
 import matplotlib.pyplot as plt
 import numpy as np
 import math as mt
 from collections import deque
 import copy
+try:
+   import queue
+except ImportError:
+   import Queue as queue
 
-start_node = [10.0,10.0,0.0]
-goal_node = [80.0,60.0] 
+start_node = [10.0, 10.0, 00.0]
+goal_node = [90.0, 90.0] 
 cost_to_come = 0
 visited_node = {}
 Queue = queue.PriorityQueue()
@@ -18,7 +22,7 @@ factor = 1
 visited_region = np.zeros((int(factor*200), int(factor*200)))  # matrix to store the visited region. It is 3 dimensional matrix
 UL = 50
 UR = 48
-clearance = 2 
+clearance = 2.0
 path_not_found = False
 
 ##############################################################
@@ -163,6 +167,7 @@ plt.scatter(x_c , y_c , c='red' , s=5)
 #### Function for taking user input ###
 #######################################
 
+
 # Takes 'x coordinate, y coordinate, orientation' of start position 
 def takeStartInput():
     print("Enter x and y co-ordinate of start node(Values ranging inbetween 0 and 10)."+"\n"+ "Please press 'Enter' key after adding each element: ")
@@ -181,6 +186,11 @@ def takeStartInput():
             if k < 0:
                 while k >= 0:
                     k = k + 360
+            start_node[i] = k
+            # if k < 0 or k > 11:
+            #     print("k should be 0 <= k <= 11.")
+            #     takeStartInput()
+
             
     # Checking for obstacle
     isTrue = isObstacle(start_node[0], start_node[1],clearance)
@@ -190,7 +200,7 @@ def takeStartInput():
 
 # Takes 'x coordinate, y coordinate, orientation' of goal position    
 def takeGoalInput():
-    print("Enter x and y co-ordinate of goal node(Values ranging inbetween 0 and 10)."+"\n"+ " Please press 'Enter' key after adding each element: ")
+    print("Enter x and y co-ordinate of GOAL node(Values ranging inbetween 0 and 10)."+"\n"+ "Please press 'Enter' key after adding each element: ")
     for i in range(2):
       goal_node[i] = int(input())*10
         # if i==2:
@@ -221,6 +231,8 @@ def generateNode(Xi,Yi,Thetai,UL,UR):
     Yn=Yi                           # end position of y coordinate (intial y + change in the y)
     Thetan = 3.14 * Thetai / 180    # end orientation  (intial theta + change in the theta)
     D=0
+    # UL = UL*3.14/60
+    # UR = UR*3.14/60
     while t<1:
         t = t + dt
         Delta_Xn = 0.5*r * (UL + UR) * mt.cos(Thetan) * dt
@@ -390,14 +402,14 @@ def exploreNode(current_node,current_cost, UL, UR, clearance):
             # plt.arrow(current_node[0], current_node[1],node8[0]-current_node[0],node8[1]-current_node[1],fc="k", head_width=0.5, head_length=0.1)
             # plt.pause(0.005)
 
-    # plt.pause(10e-10)
+    # plt.pause(10e-20)
     
 # function to compute cost to reach goal node
 # cost to reach goal node is euclidean distance between current node and goal node
 def costToGo(X):
     X = np.array([X[0],X[1]])
     Y = np.array([goal_node[0],goal_node[1]])
-    return 2*np.sqrt(np.sum((X-Y)**2))
+    return 1*np.sqrt(np.sum((X-Y)**2))
 
 # function to check whether current node is goal node or not
 # if the current node is within 1.5 unit euclidean distance of the goal node, it will be considered as goal node
@@ -412,9 +424,12 @@ def isGoalNode(X):
 
 # update visited region
 def updateVisitedRegion(X):
+    # i = int(X[0]*8)
+    # j = int(X[1]*8)
     i = int(round(X[0]*2))
     j = int(round(X[1]*2))
 
+    
     visited_region[i][j] = 1
     
     return None
@@ -425,6 +440,7 @@ def isVisited(X):
     # j = int(X[1]*8)
     i = int(round(X[0]*2))
     j = int(round(X[1]*2))
+
     
     if visited_region[i][j]:
         return True
@@ -436,6 +452,7 @@ def isVisited(X):
 ##################
 # def main():
 
+# clearance = takeClearance()         # take clearance input from user
 takeStartInput()                    # take start position and orientation input from user
 takeGoalInput()                     # take goal position and orientation input from user
 start_node = tuple(start_node)      
@@ -450,9 +467,9 @@ total_cost = cost_to_come + costToGo(start_node)
 Queue.put((total_cost,(start_node[0],start_node[1],start_node[2],cost_to_come,start_node[0],start_node[1],start_node[2],0,0)))
 
 start = time.time()
-plt.plot()
-plt.axis([0,factor*100,0,factor*100])
-plt.title("exploring map to find goal node")
+# plt.plot()
+# plt.axis([0,factor*100,0,factor*100])
+# plt.title("exploring map to find goal node")
 
 print("finding optimal path to reach goal....")
 while True:
@@ -477,6 +494,8 @@ while True:
         # redefine the goal to the nearest reachanble position to the actual goal position
         goal_node = (current_node)
         print('reached at goal node')
+        print(goal_node)
+        print("HOORAY")
         break
     
     # if the current node is not goal node, explore the next visiting node from current node
@@ -529,24 +548,31 @@ while True:
 #### Plotting Optimal path ###
 ##############################
 
-wheel_rotation_list = copy.deepcopy(RPM_list)
+wheel_rotation_list = RPM_list
 
 # x = []
 # y = []
 
-# Xi = x_path.pop()
-# Yi = y_path.pop()
+# if x_path:
+#     Xi = x_path.pop()
+#     Yi = y_path.pop()
 
-# Xn = Xi
-# Yn = Yi
-# Thetan = start_node[2]
+#     Xn = Xi
+#     Yn = Yi
+    
+#     x.append(Xn)
+#     y.append(Yn)
+    
+# # Thetan = start_node[2]
+# Thetan = 3.14 * start_node[2] / 180
 # r = 0.033                       # radius of robot
 # L = 0.16                        # span of the wheel
 # dt = 0.1                        # time interval at which x and y should be computed 
-# x.append(Xn)
-# y.append(Yn)
+
 
 # while True:
+#     if not x_path:
+#         break
 #     if not RPM_list:
 #         break
 #     plt.title("Plotting optimal path to travel from start node to goal node using A* algorithm")
@@ -566,23 +592,23 @@ wheel_rotation_list = copy.deepcopy(RPM_list)
 #         x.append(Xn)
 #         y.append(Yn)
 
-#     plt.plot(x, y, c = 'green', linewidth=1)
+#     plt.plot(x, y, c = 'red', linewidth=2)
+
 #     plt.pause(0.00000000000000005)
 
 # plt.title("Optimal path to travel from start node to goal node using A* algorithm")
-# end = time.time()
-# print("time taken to run the code"+ " : " + str(end-start)+ " seconds ")       
-# plt.show()   
+end = time.time()
+print("time taken to run the code"+ " : " + str(end-start)+ " seconds ")       
+# plt.show()
 
 # def test():
 rospy.loginfo("STARTING PUBLISHER")
 msg=Twist()
-pub=rospy.Publisher('/cmd_vel',Twist,queue_size=10)
+pub=rospy.Publisher('/cmd_vel',Twist,queue_size=1)
 rospy.init_node('robot_talker',anonymous=True)
 r = 0.033
 L = 0.16
-# w_l = [30 , 30 , 30,30 , 30,30,30,30]
-# w_r = [30 , 30 , 50,50 , 30,30,30,30]
+
 while not rospy.is_shutdown():
     while True:
         if not wheel_rotation_list:
@@ -594,30 +620,35 @@ while not rospy.is_shutdown():
         W = wheel_rotation_list.pop()
         v_l = (r*2*np.pi*W[0])/60
         v_r = (r*2*np.pi*W[1])/60
-        Pho = (v_r - v_l)/L
-        # msg.linear.x = v_l
-        # rospy.loginfo("HHHHIIIII")
+      
+        Pho = 17*((v_r - v_l)/L)
+
         v_straight = (v_l + v_r)/2
+        rospy.loginfo(Pho)
         if v_l == v_r:
             rospy.loginfo("Going straight")
             msg.linear.x = v_straight
             msg.angular.z = 0
         if Pho<0 :
-            rospy.loginfo("Turning left")
-            msg.linear.x = v_straight
-            msg.angular.z=Pho
-        if Pho>0 :
             rospy.loginfo("Turning right")
             msg.linear.x = v_straight
             msg.angular.z=Pho
+
+            rospy.sleep(0.165)
+
+        if Pho>0 :
+            rospy.loginfo("Turning left")
+            msg.linear.x = v_straight
+            msg.angular.z=Pho
+
+            rospy.sleep(0.165)
+
         rospy.loginfo(msg)
         pub.publish(msg)
-        rospy.sleep(1)
+
+        rospy.sleep(0.9777)
+
     break
 
-		#buff='my current time is %s" %rospy.get_time()
 
-		
-# if __name__=='__main__':
-# 	test()
 	
