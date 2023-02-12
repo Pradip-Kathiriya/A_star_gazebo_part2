@@ -1,7 +1,7 @@
 ## Project Description
 In this project, I have implemented A\* algorithm for path planning for turtlebot3. I have used ROS and Gazebo simulation for implementation of the algorithm.
 The environment has a static obstacle which are defined using half plane method. The algorithm has to avoid the obstacles and taking into the account nonholonomic
-constraint imposed by the turtlebot3.
+constraint imposed by the turtlebot3 during path planning.
 
 ## Results
 
