@@ -49,3 +49,12 @@ https://user-images.githubusercontent.com/90370308/218337844-dd556a43-45ac-4964-
         First, input the x - coordinate and press "Enter" .Followed by inputing the y-coordinate and press "Enter"  
 ##### 'VERY IMPORANT NOTE' ########     
 'RUN THE PROGRAM FROM START AGAIN, WHEN PROMPTED' (This is to respawn the bot correctly in gazebo, as the start or goal position is in obstacle space) 
+
+## Requirement
+Python 2.0 or above
+
+## License
+
+ [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+Copyright (c) Feb 2023 Pradip Kathiriya
